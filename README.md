@@ -1,4 +1,4 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=12208069&assignment_repo_type=AssignmentRepo)
+[![Open in Coder](https://coder.al3xdev.net/open-in-coder.svg)](https://coder.al3xdev.net/templates/ubuntu-proxmox-lxc/workspace?mode=auto&param.cpu=6&param.desktop_env_type=1&param.env_access=owner&param.i_vnc=2&param.memory=12288&param.home_disk_size=24&param.repo_url=git%40git.al3xdev.com%3Apuc%2Fsoftware-engineering-II%2Flab-modular%2Fprojeto3-dv-tribo-indigena.git)
 # Nome do projeto
 Escreva um ou dois parágrafos resumindo o objetivo do seu projeto.
 
