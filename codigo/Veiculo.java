@@ -2,66 +2,62 @@ import java.util.Scanner;
 import java.time.LocalTime;
 import java.time.Duration;
 
-
-
 public class Veiculo {
-
     private String placa;
-    private UsoDeVaga[] usos;
-    public Scanner teclado = new Scanner(System.in);
-    public LocalTime time1;
-    public  LocalTime time2;
-    public  Duration duration;
-    public long totalMinutes;
-    public long blocksOf15Minutes;
-    public long cost;
+    private UsoDeVaga usoAtual;
 
-   public String getPlaca;
     public Veiculo(String placa) {
-        System.out.print("Escreva a Placa do carro:");
-        getPlaca= teclado.nextLine();
-
+        this.placa = placa;
     }
 
-    public void estacionar(Vaga vaga) {
-System.out.print("Digite a vaga no formato 8y:(8-numero da vaga, y-fileira da vaga)");
-vaga = teclado.nextLine();
-        System.out.println("Insira o horario do inicio da estadia no estacionamento:(formato HH:mm):");
-        time1 = LocalTime.parse(teclado.nextLine());
+    public String getPlaca() {
+        return placa;
+    }
 
-
+    public void estacionar(String vaga) {
+        if (usoAtual != null) {
+            System.out.println("O veículo já está estacionado!");
+            return;
+        }
+        usoAtual = new UsoDeVaga(vaga, LocalTime.now());
     }
 
     public double sair() {
-        System.out.println("Insira o horario de saida do estacionamento:(formato HH:mm):");
-        time2 = LocalTime.parse(teclado.nextLine());
-
-
+        if (usoAtual == null) {
+            System.out.println("O veículo não está estacionado!");
+            return 0;
+        }
+        usoAtual.finalizarUso();
+        double custo = calcularCusto(usoAtual.getDuracao());
+        usoAtual = null; // Reseta o uso atual após saída
+        return custo;
     }
 
-    public double totalArrecadado() {
-        Duration duration = Duration.between(time1, time2);
-        long totalMinutes = duration.toMinutes();
+    private double calcularCusto(Duration duracao) {
+        long totalMinutes = duracao.toMinutes();
         long blocksOf15Minutes = (totalMinutes + 14) / 15;
         long cost = blocksOf15Minutes * 4;
-        if (cost > 50) {
-            cost = 50;
-        }
-        System.out.println("Custo da estadia: R$" + cost);
-
-
+        return (cost > 50) ? 50 : cost;
     }
-
-    public double arrecadadoNoMes(int mes) {
-
-    }
-
-    public int totalDeUsos() {
-
-    }
-
-    private static void main(String[] args){
-
-    }
-
 }
+
+class UsoDeVaga {
+    private String vaga;
+    private LocalTime horarioInicio;
+    private LocalTime horarioTermino;
+
+    public UsoDeVaga(String vaga, LocalTime horarioInicio) {
+        this.vaga = vaga;
+        this.horarioInicio = horarioInicio;
+    }
+
+    public void finalizarUso() {
+        this.horarioTermino = LocalTime.now();
+    }
+
+    public Duration getDuracao() {
+        if (horarioTermino == null) return Duration.ZERO;
+        return Duration.between(horarioInicio, horarioTermino);
+    }
+}
+
