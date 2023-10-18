@@ -1,13 +1,14 @@
-import java.util.Scanner;
-import java.time.LocalTime;
 import java.time.Duration;
+import java.time.LocalTime;
 
 public class Veiculo {
     private String placa;
     private UsoDeVaga usoAtual;
+    private Servicos servicos;
 
     public Veiculo(String placa) {
         this.placa = placa;
+        this.servicos = new Servicos();
     }
 
     public String getPlaca() {
@@ -28,9 +29,13 @@ public class Veiculo {
             return 0;
         }
         usoAtual.finalizarUso();
-        double custo = calcularCusto(usoAtual.getDuracao());
-        usoAtual = null; // Reseta o uso atual após saída
+        double custo = calcularCusto(usoAtual.getDuracao()) + servicos.getTotalServiceCost();
+        usoAtual = null;
         return custo;
+    }
+
+    public void selecionarServico(String nomeServico) {
+        servicos.selecionar(nomeServico);
     }
 
     private double calcularCusto(Duration duracao) {
@@ -61,3 +66,46 @@ class UsoDeVaga {
     }
 }
 
+class Servicos {
+    private final double MANOBRISTA_PRICE = 5.0;
+    private final double LAVAGEM_PRICE = 20.0;
+    private final double POLIMENTO_PRICE = 45.0;
+
+    private double totalServiceCost = 0.0;
+
+    public void selecionar(String nomeServico) {
+        switch (nomeServico.toLowerCase()) {
+            case "manobrista":
+                manobrista();
+                totalServiceCost += MANOBRISTA_PRICE;
+                break;
+            case "lavagem":
+                lavagem();
+                totalServiceCost += LAVAGEM_PRICE;
+                break;
+            case "polimento":
+                polimento();
+                totalServiceCost += POLIMENTO_PRICE;
+                break;
+            default:
+                System.out.println("Serviço não reconhecido.");
+                break;
+        }
+    }
+
+    public double getTotalServiceCost() {
+        return totalServiceCost;
+    }
+
+    private void manobrista() {
+        System.out.println("Manobrista selecionado. Preço: R$ " + MANOBRISTA_PRICE);
+    }
+
+    private void lavagem() {
+        System.out.println("Lavagem selecionado. Preço: R$ " + LAVAGEM_PRICE);
+    }
+
+    private void polimento() {
+        System.out.println("Polimento (lavagem inclusa) selecionado. Preço: R$ " + POLIMENTO_PRICE);
+    }
+}
