@@ -123,30 +123,3 @@ public class Estacionamento {
         return result.toString();
     }
 }
-
-class Cliente {
-    private String nome;
-    private String identificador;
-    private List<Veiculo> veiculos = new ArrayList<>();
-    // Construtores, getters e setters
-}
-
-class Veiculo {
-    private String placa;
-    private Cliente cliente;
-    private Vaga vaga;
-    private long horaEntrada;
-
-    // Construtores, getters e setters
-}
-
-class Vaga {
-    private String identificador;
-    private boolean ocupada;
-    private long horaEntrada;
-
-    // Construtores, getters e setters
-    public void liberar() {
-        this.ocupada = false;
-    }
-}
