@@ -1,1 +1,1 @@
-{"clientes":[{"name":"teste 1","id":"5e7b060d-793f-46f9-8dc9-eaab31456a45"},{"name":"teste 3","id":"12d473e3-e4d1-44a0-9967-7af5c61fb552"}]}
+{"veiculos":[{"placa":"OJDIN-2923","id_cliente":"564a5b38-b3db-4dcf-809c-3b1a0341f53e","is_estacionado":true,"precoTotal":null},{"placa":"UDGDBU-2836","id_cliente":"564a5b38-b3db-4dcf-809c-3b1a0341f53e","is_estacionado":false,"precoTotal":null}],"clientes":[{"name":"anon 1","id":"564a5b38-b3db-4dcf-809c-3b1a0341f53e"}]}

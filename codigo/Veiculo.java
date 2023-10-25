@@ -1,14 +1,24 @@
-import java.time.Duration;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.time.LocalTime;
+import java.util.Scanner;
 
 public class Veiculo {
     private String placa;
     private UsoDeVaga usoAtual;
     private Servicos servicos;
+    private Boolean _isEstacionado;
+    private String _idCliente;
 
     public Veiculo(String placa) {
-        this.placa = placa;
-        this.servicos = new Servicos();
+        if (this.exists(placa)){
+            this.placa = placa;
+        } else {
+            this.placa = placa;
+            this.servicos = new Servicos();
+            this.linkVeiculo();
+        }
     }
 
     public String getPlaca() {
@@ -29,7 +39,7 @@ public class Veiculo {
             return 0;
         }
         usoAtual.finalizarUso();
-        double custo = calcularCusto(usoAtual.getDuracao()) + servicos.getTotalServiceCost();
+        double custo = usoAtual.calcularCusto(usoAtual.getDuracao()) + servicos.getTotalServiceCost();
         usoAtual = null;
         return custo;
     }
@@ -38,74 +48,45 @@ public class Veiculo {
         servicos.selecionar(nomeServico);
     }
 
-    private double calcularCusto(Duration duracao) {
-        long totalMinutes = duracao.toMinutes();
-        long blocksOf15Minutes = (totalMinutes + 14) / 15;
-        long cost = blocksOf15Minutes * 4;
-        return (cost > 50) ? 50 : cost;
-    }
-}
 
-class UsoDeVaga {
-    private String vaga;
-    private LocalTime horarioInicio;
-    private LocalTime horarioTermino;
-
-    public UsoDeVaga(String vaga, LocalTime horarioInicio) {
-        this.vaga = vaga;
-        this.horarioInicio = horarioInicio;
+    public JSONObject getObj(){
+        JSONObject veiculos= new JSONObject();
+        veiculos.put("placa", this.placa);
+        veiculos.put("precoTotal", this.usoAtual);
+        veiculos.put("is_estacionado", this._isEstacionado);
+        veiculos.put("id_cliente", this._idCliente);
+        return veiculos;
     }
 
-    public void finalizarUso() {
-        this.horarioTermino = LocalTime.now();
+    public void set_isEstacionado(Boolean _isEstacionado) {
+        this._isEstacionado = _isEstacionado;
     }
 
-    public Duration getDuracao() {
-        if (horarioTermino == null) return Duration.ZERO;
-        return Duration.between(horarioInicio, horarioTermino);
-    }
-}
-
-class Servicos {
-    private final double MANOBRISTA_PRICE = 5.0;
-    private final double LAVAGEM_PRICE = 20.0;
-    private final double POLIMENTO_PRICE = 45.0;
-
-    private double totalServiceCost = 0.0;
-
-    public void selecionar(String nomeServico) {
-        switch (nomeServico.toLowerCase()) {
-            case "manobrista":
-                manobrista();
-                totalServiceCost += MANOBRISTA_PRICE;
+    private Boolean exists(String placa){
+        JSONObject data = App.getData();
+        JSONArray jsonArray = (JSONArray) data.get("veiculos");
+        Boolean found = false;
+        for (int i=0;i<jsonArray.size();i++){
+            JSONObject obj = (JSONObject) jsonArray.get(i);
+            if (String.valueOf(obj.get("placa")).equals(placa)){
+                found = true;
+                this._isEstacionado = (Boolean) obj.get("is_estacionado");
+                System.out.println(this._isEstacionado);
                 break;
-            case "lavagem":
-                lavagem();
-                totalServiceCost += LAVAGEM_PRICE;
-                break;
-            case "polimento":
-                polimento();
-                totalServiceCost += POLIMENTO_PRICE;
-                break;
-            default:
-                System.out.println("Serviço não reconhecido.");
-                break;
+            }
         }
+        return found;
     }
 
-    public double getTotalServiceCost() {
-        return totalServiceCost;
-    }
-
-    private void manobrista() {
-        System.out.println("Manobrista selecionado. Preço: R$ " + MANOBRISTA_PRICE);
-    }
-
-    private void lavagem() {
-        System.out.println("Lavagem selecionado. Preço: R$ " + LAVAGEM_PRICE);
-    }
-
-    private void polimento() {
-        System.out.println("Polimento (lavagem inclusa) selecionado. Preço: R$ " + POLIMENTO_PRICE);
+    private void linkVeiculo(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Selecione o cliente");
+        String cliente = Utils.getClientes(scanner);
+        if (cliente.isEmpty()){
+            System.out.println("Erro ao selecionar cliente");
+            this._idCliente = "";
+        } else {
+            this._idCliente = cliente;
+        }
     }
 }

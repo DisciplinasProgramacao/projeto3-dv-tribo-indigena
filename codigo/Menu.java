@@ -21,7 +21,7 @@ public class Menu {
                 menuClientes(scanner);
                 break;
             case "2":
-
+                menuVeiculos(scanner);
                 break;
             case "3":
 
@@ -46,12 +46,13 @@ public class Menu {
         System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\t1 -\t"+FontEffects.RESET + "Cadastrar cliente\n" +
                 FontEffects.WHITE_BOLD_BRIGHT+"\t2 -\t"+FontEffects.RESET + "Visualizar clientes salvos\n" +
                 FontEffects.WHITE_BOLD_BRIGHT+"\t3 -\t"+FontEffects.RESET + "Apagar cliente salvo\n" +
+                FontEffects.WHITE_BOLD_BRIGHT+"\t4 -\t"+FontEffects.RESET + "Visualizar veiculos associados a um cliente\n" +
                 FontEffects.WHITE_UNDERLINED+"Pressione a tecla referente, ou \"q\" para voltar."+FontEffects.RESET);
         String line = scanner.nextLine();
         System.out.println("\n\n\n\n");
         switch (line.trim()){
             case "1": {
-                Cliente cliente = new Cliente();
+                Cliente cliente = new Cliente(null);
                 System.out.println("Insira o nome do cliente.");
                 String lineCliente = scanner.nextLine();
                 if (lineCliente.isEmpty()) {
@@ -111,6 +112,107 @@ public class Menu {
                 }
                 menuClientes(scanner);
             }
+            case "4": {
+                JSONArray veiculos = Utils.getVeiculosCliente(Utils.getClientes(scanner));
+
+                for (Object obj: veiculos){
+                    JSONObject item = (JSONObject) obj;
+                    System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Placa:\t"+FontEffects.RESET + item.get("placa"));
+                    String isEstacionado = "nao";
+                    if ((Boolean) item.get("is_estacionado")){
+                        isEstacionado = "sim";
+                    }
+                    System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Esta estacionado:\t"+FontEffects.RESET + isEstacionado);
+                    System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
+                }
+            }
+        }
+    }
+
+    private void menuVeiculos(Scanner scanner) {
+        clearConsole();
+        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Gerencia de Estacionamentos"+FontEffects.RESET);
+        System.out.println(FontEffects.WHITE_UNDERLINED+"Escolha uma opcao:"+FontEffects.RESET);
+        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\t1 -\t"+FontEffects.RESET + "Cadastrar veiculo\n" +
+                FontEffects.WHITE_BOLD_BRIGHT+"\t2 -\t"+FontEffects.RESET + "Visualizar veiculos salvos\n" +
+                FontEffects.WHITE_BOLD_BRIGHT+"\t3 -\t"+FontEffects.RESET + "Apagar veiculo salvo\n" +
+                FontEffects.WHITE_UNDERLINED+"Pressione a tecla referente, ou \"q\" para voltar."+FontEffects.RESET);
+        String line = scanner.nextLine();
+        System.out.println("\n\n\n\n");
+
+        switch (line.trim()){
+            case "1":{
+                System.out.println("Insira a placa do veiculo.");
+                String lineVeiculoPlaca = scanner.nextLine();
+                System.out.println("O veiculo esta estacionado?\n1-\tSim\n2-\tNao");
+                String lineVeiculoEstacionado = scanner.nextLine();
+                Boolean isEstacionado = false;
+                if (lineVeiculoEstacionado.trim().equals("1")){
+                    isEstacionado = true;
+                }
+                if (lineVeiculoPlaca.isEmpty()) {
+                    menuVeiculos(scanner);
+                } else {
+                    Veiculo veiculo = new Veiculo(lineVeiculoPlaca);
+                    veiculo.set_isEstacionado(isEstacionado);
+                    JSONObject data = App.getData();
+                    JSONArray jsonArray = (JSONArray) data.get("veiculos");
+                    jsonArray.add(veiculo.getObj());
+                    App.saveFile(data.toJSONString());
+                    menuVeiculos(scanner);
+                }
+                break;
+            }
+            case "2": {
+                JSONObject data = App.getData();
+                JSONArray jsonArray = (JSONArray) data.get("veiculos");
+                if (jsonArray.isEmpty()){
+                    System.out.println("Nao ha veiculos registrados.");
+                } else {
+                    System.out.println(FontEffects.WHITE_UNDERLINED+"Veiculos salvos:"+FontEffects.RESET);
+                    for (Object obj: jsonArray) {
+                        JSONObject item = (JSONObject) obj;
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Placa:\t"+FontEffects.RESET + item.get("placa"));
+                        String isEstacionado = "nao";
+                        if ((Boolean) item.get("is_estacionado")){
+                            isEstacionado = "sim";
+                        }
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Esta estacionado:\t"+FontEffects.RESET + isEstacionado);
+                        System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
+                    }
+                }
+                menuVeiculos(scanner);
+                break;
+            }
+            case "3": {
+                JSONObject data = App.getData();
+                JSONArray jsonArray = (JSONArray) data.get("veiculos");
+                if (jsonArray.isEmpty()){
+                    System.out.println("Nao ha veiculos cadastrados.");
+                } else {
+                    System.out.println(FontEffects.WHITE_UNDERLINED+"Veiculos salvos:"+FontEffects.RESET);
+                    int count = 0;
+                    for (Object obj: jsonArray) {
+                        JSONObject item = (JSONObject) obj;
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+String.valueOf(count)+"-\t"+"Placa:\t"+FontEffects.RESET + item.get("placa"));
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\tEsta estacionado:\t"+FontEffects.RESET + item.get("is_estacionado"));
+                        System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
+                        count++;
+                    }
+                    System.out.println(FontEffects.WHITE_UNDERLINED+"Digite o index do veiculo que deseja apagar:"+FontEffects.RESET);
+                    Integer index = Integer.valueOf(scanner.nextLine());
+                    for (int i=0;i<jsonArray.size();i++){
+                        JSONObject obj = (JSONObject) jsonArray.get(i);
+                        if (i == index){
+                            jsonArray.remove(i);
+                            App.saveFile(data.toJSONString());
+                            break;
+                        }
+                    }
+                }
+                menuVeiculos(scanner);
+            }
+
         }
     }
 
