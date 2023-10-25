@@ -3,12 +3,14 @@ import org.json.simple.JSONObject;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Scanner;
 
 public class Veiculo {
     private String placa;
     private UsoDeVaga usoAtual;
     private Servicos servicos;
     private Boolean _isEstacionado;
+    private String _idCliente;
 
     public Veiculo(String placa) {
         if (this.exists(placa)){
@@ -16,6 +18,7 @@ public class Veiculo {
         } else {
             this.placa = placa;
             this.servicos = new Servicos();
+            this.linkVeiculo();
         }
     }
 
@@ -52,6 +55,7 @@ public class Veiculo {
         veiculos.put("palca", this.placa);
         veiculos.put("precoTotal", this.usoAtual);
         veiculos.put("is_estacionado", this._isEstacionado);
+        veiculos.put("id_cliente", this._idCliente);
         return veiculos;
     }
 
@@ -73,5 +77,17 @@ public class Veiculo {
             }
         }
         return found;
+    }
+
+    private void linkVeiculo(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Selecione o cliente");
+        String cliente = Utils.getClientes(scanner);
+        if (cliente.isEmpty()){
+            System.out.println("Erro ao selecionar cliente");
+            this._idCliente = "";
+        } else {
+            this._idCliente = cliente;
+        }
     }
 }
