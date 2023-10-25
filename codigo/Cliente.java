@@ -1,4 +1,3 @@
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.UUID;
@@ -7,8 +6,12 @@ public class Cliente {
     private String _id;
     private String _name;
 
-    Cliente() {
-        this._id = String.valueOf(UUID.randomUUID());
+    Cliente(String id) {
+        if (id.isEmpty()){
+            this._id = String.valueOf(UUID.randomUUID());
+        } else {
+            this._id = id;
+        }
     }
 
     public String get_name() {

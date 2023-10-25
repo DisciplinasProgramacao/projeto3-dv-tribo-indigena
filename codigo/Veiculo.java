@@ -1,7 +1,6 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Scanner;
 
@@ -52,7 +51,7 @@ public class Veiculo {
 
     public JSONObject getObj(){
         JSONObject veiculos= new JSONObject();
-        veiculos.put("palca", this.placa);
+        veiculos.put("placa", this.placa);
         veiculos.put("precoTotal", this.usoAtual);
         veiculos.put("is_estacionado", this._isEstacionado);
         veiculos.put("id_cliente", this._idCliente);

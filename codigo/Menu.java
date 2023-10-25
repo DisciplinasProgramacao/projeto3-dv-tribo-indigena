@@ -46,12 +46,13 @@ public class Menu {
         System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\t1 -\t"+FontEffects.RESET + "Cadastrar cliente\n" +
                 FontEffects.WHITE_BOLD_BRIGHT+"\t2 -\t"+FontEffects.RESET + "Visualizar clientes salvos\n" +
                 FontEffects.WHITE_BOLD_BRIGHT+"\t3 -\t"+FontEffects.RESET + "Apagar cliente salvo\n" +
+                FontEffects.WHITE_BOLD_BRIGHT+"\t4 -\t"+FontEffects.RESET + "Visualizar veiculos associados a um cliente\n" +
                 FontEffects.WHITE_UNDERLINED+"Pressione a tecla referente, ou \"q\" para voltar."+FontEffects.RESET);
         String line = scanner.nextLine();
         System.out.println("\n\n\n\n");
         switch (line.trim()){
             case "1": {
-                Cliente cliente = new Cliente();
+                Cliente cliente = new Cliente(null);
                 System.out.println("Insira o nome do cliente.");
                 String lineCliente = scanner.nextLine();
                 if (lineCliente.isEmpty()) {
@@ -110,6 +111,20 @@ public class Menu {
                     }
                 }
                 menuClientes(scanner);
+            }
+            case "4": {
+                JSONArray veiculos = Utils.getVeiculosCliente(Utils.getClientes(scanner));
+
+                for (Object obj: veiculos){
+                    JSONObject item = (JSONObject) obj;
+                    System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Placa:\t"+FontEffects.RESET + item.get("placa"));
+                    String isEstacionado = "nao";
+                    if ((Boolean) item.get("is_estacionado")){
+                        isEstacionado = "sim";
+                    }
+                    System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Esta estacionado:\t"+FontEffects.RESET + isEstacionado);
+                    System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
+                }
             }
         }
     }

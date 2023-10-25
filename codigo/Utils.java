@@ -1,6 +1,7 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Utils {
@@ -29,6 +30,24 @@ public class Utils {
                 }
             }
             return "";
+        }
+    }
+
+    public static JSONArray getVeiculosCliente(String id) {
+        JSONObject data = App.getData();
+        JSONArray jsonArray = (JSONArray) data.get("veiculos");
+        if (jsonArray.isEmpty()){
+            System.out.println("Nao ha clientes registrados.");
+            return new JSONArray();
+        } else {
+            JSONArray allVeiculos = new JSONArray();
+            for (int i=0;i<jsonArray.size();i++){
+                JSONObject obj = (JSONObject) jsonArray.get(i);
+                if (Objects.equals((String) obj.get("id_cliente"), id)){
+                    allVeiculos.add(obj);
+                }
+            }
+            return allVeiculos;
         }
     }
 }
