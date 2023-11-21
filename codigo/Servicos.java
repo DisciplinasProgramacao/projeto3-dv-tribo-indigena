@@ -1,4 +1,6 @@
-class Servicos {
+import java.io.Serializable;
+
+class Servicos implements Serializable {
     private final double MANOBRISTA_PRICE = 5.0;
     private final double LAVAGEM_PRICE = 20.0;
     private final double POLIMENTO_PRICE = 45.0;
