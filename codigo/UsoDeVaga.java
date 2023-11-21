@@ -1,11 +1,13 @@
-import java.time.Duration;
-import java.time.LocalTime;
 
-class UsoDeVaga {
+import java.io.Serializable;
+        import java.time.Duration;
+        import java.time.LocalTime;
+
+class UsoDeVaga implements Serializable {
+
     private String vaga;
     private LocalTime horarioInicio;
     private LocalTime horarioTermino;
-
 
     public UsoDeVaga(String vaga, LocalTime horarioInicio) {
         this.vaga = vaga;
@@ -15,26 +17,34 @@ class UsoDeVaga {
     public void finalizarUso() {
         this.horarioTermino = LocalTime.now();
     }
-    public double sair() {
-        if (null == null) {
-            System.out.println("O veículo não está estacionado!");
-            return 0;
-        }
-        this.finalizarUso();
-        //double custo = calcularCusto(this.getDuracao()) + servicos.getTotalServiceCost();
-        //return custo;
-        return 2;
-    }
 
     public Duration getDuracao() {
         if (horarioTermino == null) return Duration.ZERO;
         return Duration.between(horarioInicio, horarioTermino);
     }
+
     public double calcularCusto(Duration duracao) {
         long totalMinutes = duracao.toMinutes();
         long blocksOf15Minutes = (totalMinutes + 14) / 15;
-        long cost = blocksOf15Minutes * 4;
-        return (cost > 50) ? 50 : cost;
+        double cost = blocksOf15Minutes * 4;
+        return Math.min(cost, 50);
+    }
+    public double getCusto() {
+        Duration duracao = getDuracao();
+        return calcularCusto(duracao);
+    }
 
+
+    // Getters
+    public String getVaga() {
+        return vaga;
+    }
+
+    public LocalTime getHorarioInicio() {
+        return horarioInicio;
+    }
+
+    public LocalTime getHorarioTermino() {
+        return horarioTermino;
     }
 }

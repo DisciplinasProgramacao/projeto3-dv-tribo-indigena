@@ -83,11 +83,14 @@ public class Data {
 
     public void setVeiculo(List<Veiculo> veiculo) {
         this.veiculo = veiculo;
+        /*
         try {
             this.saveFile();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+
+         */
     }
 
     private void saveFile() throws FileNotFoundException {
