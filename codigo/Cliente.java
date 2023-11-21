@@ -1,8 +1,7 @@
-import org.json.simple.JSONObject;
-
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Cliente {
+public class Cliente implements Serializable {
     private String _id;
     private String _name;
 
@@ -26,10 +25,7 @@ public class Cliente {
         this._name = name;
     }
 
-    public JSONObject getObj(){
-        JSONObject clienteEntry = new JSONObject();
-        clienteEntry.put("id", this._id);
-        clienteEntry.put("name", this._name);
-        return clienteEntry;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 }

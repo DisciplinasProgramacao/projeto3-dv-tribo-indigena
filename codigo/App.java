@@ -1,17 +1,13 @@
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
 import java.util.Scanner;
 
 
 public class App {
+    private Cliente[] cliente;
+    private Veiculo[] veiculo;
 
     public App() {
+        getData();
         Scanner scanner = new Scanner(System.in);
         Menu menu = new Menu();
         menu.setupMenu(scanner);
@@ -21,28 +17,44 @@ public class App {
         new App();
     }
 
-    public static JSONObject getData(){
-        JSONParser parser = new JSONParser();
-        JSONObject parsedData = null;
-
-        try (FileReader reader = new FileReader("data.json")) {
-            Object obj = parser.parse(reader);
-            parsedData = (JSONObject) obj;
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
+    public static SerializedData getData(){
+        SerializedData serializedData = new SerializedData();
+        FileInputStream fileIn;
+        try {
+            fileIn = new FileInputStream(Vars.FILE_DATA.toString());
+            try(ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
+                serializedData = (SerializedData) objectIn.readObject();
+                return serializedData;
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Creating new file");
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(new File(Vars.FILE_DATA.toString()));
+                serializedData.setCliente(new Cliente[0]);
+                serializedData.setVeiculo(new Veiculo[0]);
+                return serializedData;
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (IOException e) {
+            System.out.println("Error when reading file");
+            serializedData.setCliente(new Cliente[0]);
+            serializedData.setVeiculo(new Veiculo[0]);
+            return serializedData;
         }
-
-        return parsedData;
     }
 
-    public static void saveFile(String contents){
-        try {
-            File file = new File("data.json");
-            file.createNewFile();
-            Files.write(Paths.get("data.json"), contents.getBytes());
+    public static void saveFile(SerializedData serializedData) {
+        try (FileOutputStream fileOut = new FileOutputStream(Vars.FILE_DATA.toString())) {
+            try(ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
+                objectOut.writeObject(serializedData);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
