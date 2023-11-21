@@ -1,6 +1,3 @@
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.time.LocalTime;
 import java.util.Scanner;
 
@@ -49,28 +46,21 @@ public class Veiculo {
     }
 
 
-    public JSONObject getObj(){
-        JSONObject veiculos= new JSONObject();
-        veiculos.put("placa", this.placa);
-        veiculos.put("precoTotal", this.usoAtual);
-        veiculos.put("is_estacionado", this._isEstacionado);
-        veiculos.put("id_cliente", this._idCliente);
-        return veiculos;
-    }
-
     public void set_isEstacionado(Boolean _isEstacionado) {
         this._isEstacionado = _isEstacionado;
     }
 
+    public Boolean get_isEstacionado(){
+        return this._isEstacionado;
+    }
+
     private Boolean exists(String placa){
-        JSONObject data = App.getData();
-        JSONArray jsonArray = (JSONArray) data.get("veiculos");
+        Data data = new Data();
         Boolean found = false;
-        for (int i=0;i<jsonArray.size();i++){
-            JSONObject obj = (JSONObject) jsonArray.get(i);
-            if (String.valueOf(obj.get("placa")).equals(placa)){
+        for (int i=0;i<data.getVeiculo().size();i++){
+            if (String.valueOf(data.getVeiculo().get(i).getPlaca()).equals(placa)){
                 found = true;
-                this._isEstacionado = (Boolean) obj.get("is_estacionado");
+                this._isEstacionado = (Boolean) data.getVeiculo().get(i).get_isEstacionado();
                 System.out.println(this._isEstacionado);
                 break;
             }
@@ -88,5 +78,13 @@ public class Veiculo {
         } else {
             this._idCliente = cliente;
         }
+    }
+
+    public String get_idCliente() {
+        return _idCliente;
+    }
+
+    public void set_idCliente(String _idCliente) {
+        this._idCliente = _idCliente;
     }
 }

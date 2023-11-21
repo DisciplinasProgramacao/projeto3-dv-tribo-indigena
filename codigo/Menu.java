@@ -1,6 +1,4 @@
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -52,7 +50,7 @@ public class Menu {
         System.out.println("\n\n\n\n");
         switch (line.trim()){
             case "1": {
-                Cliente cliente = new Cliente(null);
+                Cliente cliente = new Cliente("");
                 System.out.println("Insira o nome do cliente.");
                 String lineCliente = scanner.nextLine();
                 if (lineCliente.isEmpty()) {
@@ -60,24 +58,20 @@ public class Menu {
                 } else {
                     cliente.set_name(lineCliente);
                 }
-                JSONObject data = App.getData();
-                JSONArray jsonArray = (JSONArray) data.get("clientes");
-                jsonArray.add(cliente.getObj());
-                App.saveFile(data.toJSONString());
+                Data data = new Data();
+                data.addCliente(cliente);
                 menuClientes(scanner);
                 break;
             }
             case "2": {
-                JSONObject data = App.getData();
-                JSONArray jsonArray = (JSONArray) data.get("clientes");
-                if (jsonArray.isEmpty()){
+                Data data = new Data();
+                if (data.getCliente() == null){
                     System.out.println("Nao ha clientes registrados.");
                 } else {
                     System.out.println(FontEffects.WHITE_UNDERLINED+"Clientes salvos:"+FontEffects.RESET);
-                    for (Object obj: jsonArray) {
-                        JSONObject item = (JSONObject) obj;
-                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Nome:\t"+FontEffects.RESET + item.get("name"));
-                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"ID:\t"+FontEffects.RESET + item.get("id"));
+                    for (int i=0;i<data.getCliente().size();i++) {
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Nome:\t"+FontEffects.RESET + data.getCliente().get(i).get_name());
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"ID:\t"+FontEffects.RESET + data.getCliente().get(i).get_id());
                         System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
                     }
                 }
@@ -85,47 +79,37 @@ public class Menu {
                 break;
             }
             case "3": {
-                JSONObject data = App.getData();
-                JSONArray jsonArray = (JSONArray) data.get("clientes");
-                if (jsonArray.isEmpty()){
+                Data data = new Data();
+                if (data.getCliente() == null){
                     System.out.println("Nao ha clientes registrados.");
                 } else {
                     System.out.println(FontEffects.WHITE_UNDERLINED+"Clientes salvos:"+FontEffects.RESET);
-                    int count = 0;
-                    for (Object obj: jsonArray) {
-                        JSONObject item = (JSONObject) obj;
-                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+String.valueOf(count)+"-\t"+"Nome:\t"+FontEffects.RESET + item.get("name"));
-                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\tID:\t"+FontEffects.RESET + item.get("id"));
+                    for (int i=0; i<data.getCliente().size();i++) {
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+String.valueOf(i)+"-\t"+"Nome:\t"+FontEffects.RESET + data.getCliente().get(i).get_name());
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\tID:\t"+FontEffects.RESET + data.getCliente().get(i).get_id());
                         System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
-                        count++;
                     }
                     System.out.println(FontEffects.WHITE_UNDERLINED+"Digite o index do cliente que deseja apagar:"+FontEffects.RESET);
                     Integer index = Integer.valueOf(scanner.nextLine());
-                    for (int i=0;i<jsonArray.size();i++){
-                        JSONObject obj = (JSONObject) jsonArray.get(i);
-                        if (i == index){
-                            jsonArray.remove(i);
-                            App.saveFile(data.toJSONString());
-                            break;
-                        }
-                    }
+                    data.rmCliente(index);
                 }
                 menuClientes(scanner);
             }
             case "4": {
-                JSONArray veiculos = Utils.getVeiculosCliente(Utils.getClientes(scanner));
+                List<Veiculo> veiculos = Utils.getVeiculosCliente(Utils.getClientes(scanner));
 
-                for (Object obj: veiculos){
-                    JSONObject item = (JSONObject) obj;
-                    System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Placa:\t"+FontEffects.RESET + item.get("placa"));
+                for (Veiculo obj: veiculos){
+                    Veiculo item = obj;
+                    System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Placa:\t"+FontEffects.RESET + item.getPlaca());
                     String isEstacionado = "nao";
-                    if ((Boolean) item.get("is_estacionado")){
+                    if ((Boolean) item.get_isEstacionado()){
                         isEstacionado = "sim";
                     }
                     System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Esta estacionado:\t"+FontEffects.RESET + isEstacionado);
                     System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
                 }
             }
+
         }
     }
 
@@ -155,26 +139,22 @@ public class Menu {
                 } else {
                     Veiculo veiculo = new Veiculo(lineVeiculoPlaca);
                     veiculo.set_isEstacionado(isEstacionado);
-                    JSONObject data = App.getData();
-                    JSONArray jsonArray = (JSONArray) data.get("veiculos");
-                    jsonArray.add(veiculo.getObj());
-                    App.saveFile(data.toJSONString());
+                    Data data = new Data();
+                    data.addVeiculo(veiculo);
                     menuVeiculos(scanner);
                 }
                 break;
             }
             case "2": {
-                JSONObject data = App.getData();
-                JSONArray jsonArray = (JSONArray) data.get("veiculos");
-                if (jsonArray.isEmpty()){
+                Data data = new Data();
+                if (data.getVeiculo() == null){
                     System.out.println("Nao ha veiculos registrados.");
                 } else {
                     System.out.println(FontEffects.WHITE_UNDERLINED+"Veiculos salvos:"+FontEffects.RESET);
-                    for (Object obj: jsonArray) {
-                        JSONObject item = (JSONObject) obj;
-                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Placa:\t"+FontEffects.RESET + item.get("placa"));
+                    for (int i=0;i<data.getVeiculo().size();i++) {
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Placa:\t"+FontEffects.RESET + data.getVeiculo().get(i).getPlaca());
                         String isEstacionado = "nao";
-                        if ((Boolean) item.get("is_estacionado")){
+                        if ((Boolean) data.getVeiculo().get(i).get_isEstacionado()){
                             isEstacionado = "sim";
                         }
                         System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Esta estacionado:\t"+FontEffects.RESET + isEstacionado);
@@ -185,30 +165,21 @@ public class Menu {
                 break;
             }
             case "3": {
-                JSONObject data = App.getData();
-                JSONArray jsonArray = (JSONArray) data.get("veiculos");
-                if (jsonArray.isEmpty()){
+                Data data = new Data();
+                if (data.getVeiculo() == null){
                     System.out.println("Nao ha veiculos cadastrados.");
                 } else {
                     System.out.println(FontEffects.WHITE_UNDERLINED+"Veiculos salvos:"+FontEffects.RESET);
                     int count = 0;
-                    for (Object obj: jsonArray) {
-                        JSONObject item = (JSONObject) obj;
-                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+String.valueOf(count)+"-\t"+"Placa:\t"+FontEffects.RESET + item.get("placa"));
-                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\tEsta estacionado:\t"+FontEffects.RESET + item.get("is_estacionado"));
+                    for (int i=0;i<data.getVeiculo().size();i++) {
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+String.valueOf(count)+"-\t"+"Placa:\t"+FontEffects.RESET + data.getVeiculo().get(i).getPlaca());
+                        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"\tEsta estacionado:\t"+FontEffects.RESET + data.getVeiculo().get(i).get_isEstacionado());
                         System.out.println(FontEffects.WHITE_UNDERLINED + "                            " + FontEffects.RESET);
                         count++;
                     }
                     System.out.println(FontEffects.WHITE_UNDERLINED+"Digite o index do veiculo que deseja apagar:"+FontEffects.RESET);
                     Integer index = Integer.valueOf(scanner.nextLine());
-                    for (int i=0;i<jsonArray.size();i++){
-                        JSONObject obj = (JSONObject) jsonArray.get(i);
-                        if (i == index){
-                            jsonArray.remove(i);
-                            App.saveFile(data.toJSONString());
-                            break;
-                        }
-                    }
+                    data.rmVeiculo(index);
                 }
                 menuVeiculos(scanner);
             }
