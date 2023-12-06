@@ -6,7 +6,7 @@ before_script:
   - rm -rf ./public/*
   - apk add rsync
   - rsync -av --exclude='public' --exclude='.gitlab-ci.yml'
-    --exclude='.gitignore' ./* ./public/
+    --exclude='.gitignore' ./docs/javadoc/* ./public/
 pages:
   tags:
     - docker
