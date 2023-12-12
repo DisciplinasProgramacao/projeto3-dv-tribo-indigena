@@ -2,6 +2,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
+    private Relatorio relatorio;
+
+    public Menu() {
+        this.relatorio = new Relatorio();
+    }
+
     public void setupMenu(Scanner scanner){
         clearConsole();
         System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Gerencia de Estacionamentos"+FontEffects.RESET);
@@ -11,6 +17,7 @@ public class Menu {
                         FontEffects.WHITE_BOLD_BRIGHT+"\t2 -\t"+FontEffects.RESET + "Veiculos\n"+
                         FontEffects.WHITE_BOLD_BRIGHT+"\t3 -\t"+FontEffects.RESET + "Vagas\n"+
                         FontEffects.WHITE_BOLD_BRIGHT+"\t4 -\t"+FontEffects.RESET + "Estacionamentos\n"+
+                        FontEffects.WHITE_BOLD_BRIGHT+"\t5 -\t"+FontEffects.RESET + "Relatórios\n"+
                         FontEffects.WHITE_UNDERLINED+"Pressione a tecla referente, ou \"q\" para sair."+FontEffects.RESET
         );
         String line = scanner.nextLine();
@@ -26,6 +33,9 @@ public class Menu {
                 break;
             case "4":
 
+                break;
+            case "5":
+                menuRelatorios(scanner);
                 break;
             case "q":
                 System.exit(0);
@@ -235,6 +245,37 @@ public class Menu {
                 break;
             }
         }
+    }
+
+    private void menuRelatorios(Scanner scanner) {
+        clearConsole();
+        System.out.println(FontEffects.WHITE_BOLD_BRIGHT+"Relatórios de Estacionamento"+FontEffects.RESET);
+        System.out.println(FontEffects.WHITE_UNDERLINED+"Escolha uma opção:"+FontEffects.RESET);
+        System.out.println(
+                FontEffects.WHITE_BOLD_BRIGHT+"\t1 -\t"+FontEffects.RESET + "Top 5 Clientes com Maior Arrecadação\n"+
+                        FontEffects.WHITE_BOLD_BRIGHT+"\t2 -\t"+FontEffects.RESET + "Arrecadação Mensal Total\n"+
+                        FontEffects.WHITE_UNDERLINED+"Pressione a tecla referente, ou \"q\" para voltar."+FontEffects.RESET
+        );
+
+        String line = scanner.nextLine();
+        switch (line.trim()){
+            case "1":
+                relatorio.exibirTopClientes();
+                break;
+            case "2":
+                relatorio.exibirArrecadacaoMensal();
+                break;
+            case "q":
+                setupMenu(scanner);
+                break;
+            default:
+                System.out.println(FontEffects.YELLOW_BRIGHT + "A opção não é válida"+FontEffects.RESET);
+                menuRelatorios(scanner);
+                break;
+        }
+        System.out.println("\nPressione qualquer tecla para continuar...");
+        scanner.nextLine();
+        menuRelatorios(scanner);
     }
 
     public void clearConsole() {

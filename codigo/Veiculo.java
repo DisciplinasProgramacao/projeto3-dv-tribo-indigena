@@ -1,15 +1,18 @@
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Veiculo implements Serializable {
+public class Veiculo implements Serializable, Subject {
     private String placa;
     private UsoDeVaga usoAtual;
     private Servicos servicos;
     private Boolean _isEstacionado;
     private String _idCliente;
     private RegistroDeUsos registroDeUsos;
+
+    private List<Observer> observers = new ArrayList<>();
 
     public Veiculo(String placa) {
         if (this.exists(placa)){
@@ -56,6 +59,9 @@ public class Veiculo implements Serializable {
         usoAtual.finalizarUso();
         double custo = usoAtual.calcularCusto(usoAtual.getDuracao()) + servicos.getTotalServiceCost();
         usoAtual = null;
+
+        notifyObservers();
+
         return custo;
     }
 
@@ -183,4 +189,22 @@ public class Veiculo implements Serializable {
     public void set_idCliente(String _idCliente) {
         this._idCliente = _idCliente;
     }
+
+    @Override
+    public void addObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(this);
+        }
+    }
+
 }

@@ -3,8 +3,6 @@ import java.io.Serializable;
         import java.time.Duration;
         import java.time.LocalTime;
 
-
-        //Create a Prototype for this class.
 class UsoDeVaga implements Serializable, Cloneable {
 
     private String vaga;
