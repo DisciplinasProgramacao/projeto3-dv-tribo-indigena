@@ -3,7 +3,9 @@ import java.io.Serializable;
         import java.time.Duration;
         import java.time.LocalTime;
 
-class UsoDeVaga implements Serializable {
+
+        //Create a Prototype for this class.
+class UsoDeVaga implements Serializable, Cloneable {
 
     private String vaga;
     private LocalTime horarioInicio;
@@ -46,5 +48,18 @@ class UsoDeVaga implements Serializable {
 
     public LocalTime getHorarioTermino() {
         return horarioTermino;
+    }
+
+    @Override
+    public UsoDeVaga clone() {
+        try {
+            UsoDeVaga cloned = (UsoDeVaga) super.clone();
+            cloned.vaga = this.vaga;
+            cloned.horarioInicio = this.horarioInicio != null ? LocalTime.from(this.horarioInicio) : null;
+            cloned.horarioTermino = this.horarioTermino != null ? LocalTime.from(this.horarioTermino) : null;
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Cloning not supported for this object", e);
+        }
     }
 }
