@@ -7,6 +7,7 @@
   - Requisitos (classes e testes): 2/12 pontos;
   - Documentação: 0/3 pontos;
   - Tarefas nas aulas: 5 pontos;
+  - 01/11 - 08/11 - 15/11 (Nenhum commit nos dias de aula)
   - Atraso nos artefatos: desconto de 1 a 4 pontos por semana.
 
 ## Requisitos
