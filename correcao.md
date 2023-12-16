@@ -2,6 +2,9 @@
 
 - Contribuições e tarefas em aula
 - Tarefas nas aulas ao longo do projeto: 5 pontos;
+- 04/10 (Alexandre, Christiano)
+- 11/10 (Alexandre)
+- 18/10
 
 
 - Requisitos : 4,5/12 pontos;
